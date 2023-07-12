@@ -6,21 +6,44 @@
 ' Counter metric collector
 Class Counter
     Private e_collector
-    Public Default Property Get Collector ' Extending Collector
-        Set Collector = e_collector
+    Public Default Property Get ExtendedCollector ' Extending Collector
+        Set ExtendedCollector = e_collector
     End Property
 
     Public Function Init(p_builder)
         Set e_collector = New Collector.Init(p_builder)
         Set Init = me
     End Function
+
+    Public Function getByLabels(p_labelValues)
+        Dim result
+        Set result = e_collector.getByLabels(p_labelValues)
+        If result Is Nothing Then
+            Set result = New CounterSample
+            result().m_labelValues = p_labelValues
+            e_collector.addSample(result)
+        End If
+
+        Set getByLabels = result
+    End Function
+
+    Public Function getWithoutLabels()
+        Dim result
+        Set result = e_collector.getWithoutLabels()
+        If result Is Nothing Then
+            Set result = New CounterSample
+            e_collector.addSample(result)
+        End if
+
+        Set getWithoutLabels = result
+    End Function
 End Class
 
 ' Builder pattern for Counter
 Class CounterBuilder
     Private e_collectionBuilder
-    Public Default Property Get Builder ' Extending CollectorBuilder
-        Set Builder = e_collectionBuilder
+    Public Default Property Get ExtendedBuilder ' Extending CollectorBuilder
+        Set ExtendedBuilder = e_collectionBuilder
     End Property
 
     Private Sub Class_Initialize()
@@ -38,6 +61,11 @@ End Class
 
 ' A sample that contains the actual counter metric
 Class CounterSample
+    Private e_sample
+    Public Default Property Get ExtendedSample ' Extending Sample
+        Set ExtendedSample = e_sample
+    End Property
+
     Private m_value
     Public Property Get Value()
         Value = m_value
@@ -50,6 +78,7 @@ Class CounterSample
     End Property
 
     Private Sub Class_Initialize()
+        Set e_sample = New Sample
         m_value = 0
         m_created = convertUtcDateTimeToEpoch(getCurrentDateTimeUtc()) * 1000
     End Sub
