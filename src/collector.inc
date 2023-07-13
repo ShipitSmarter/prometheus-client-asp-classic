@@ -1,3 +1,5 @@
+<!-- #include virtual = "/prometheus-client/internal/array.inc" -->
+<!-- #include virtual = "/prometheus-client/internal/keyvaluepair.inc" -->
 <!-- #include virtual = "/prometheus-client/internal/list.inc" -->
 
 <%
@@ -8,10 +10,10 @@ Class Collector
     Public m_name
     Public m_help
     Public m_labelNames
-    Public m_samples
+    Public m_children ' ArrayList of KeyValuePair of Array and Object
 
     Private Sub Class_Initialize()
-        Set m_samples = NewArrayList
+        Set m_children = NewArrayList
     End Sub
 
     Public Function Init(p_builder)
@@ -33,37 +35,33 @@ Class Collector
         ' TODO
     End Function
 
-    ' Return the sample with the given labels, creating it if needed. Null if no sample found.
-    Public Function getByLabels(p_labelValues)
+    ' Return the child with the given labels, creating it if needed. Nothing if no child found.
+    Public Function getForLabels(p_labelValues)
+        validateLabelValues(p_labelValues)
         Dim result: Set result = Nothing
-        For Each item in m_samples
-            If item.m_labelValues = p_labelValues Then
-                Set result = item
+        Dim child
+        For Each child In m_children
+            If arraysAreEqaul(child.Key, p_labelValues) Then
+                Set result = child.Value
                 Exit For
             End If
         Next
-        Set getByLabels = result
+        Set getForLabels = result
     End Function
 
-    ' Return the single contained sample when no labels are set. Null if no sample found.
-    Public Function getWithoutLabels()
-        If UBound(m_labelNames) > 0 Then
-            Err.Raise 5, "Collector.noLabels", "There are labels set for this metric, use Collector.labels instead."
-        End If
+    ' Add a new child to the collector. Make sure a child with the same label values does not already exists.
+    Public Sub addChild(p_child, p_labelValues)
+        validateLabelValues(p_labelValues)
+        Dim kvp
+        Set kvp = New KeyValuePair.Init(p_labelValues, p_child)
+        m_children.Add(kvp)
+    End Sub
 
-        If m_samples.Count = 0 Then
-            Set getWithoutLabels = Nothing
-        Else
-            Set getWithoutLabels = m_samples(0)
+    ' Raise an error if label values are not valid.
+    Private Sub validateLabelValues(p_labelValues)
+        If UBound(p_labelValues) <> UBound(m_labelNames) Then
+            Err.Raise 5, "Collector.validateLabelValues", "The amount of provided label values (" & UBound(p_labelValues) + 1 & ") does not equal the amount of label names (" & UBound(m_labelNames) + 1 & ") set for collector '" & m_name & "'."
         End If
-    End Function
-
-    ' Add a new sample to the collector. Make sure a sample with the same label values does not already exists.
-    Public Sub addSample(p_sample)
-        If UBound(p_sample().m_labelValues) <> UBound(m_labelNames) Then
-            Err.Raise 5, "Collector.addSample", "The amount of label values does not correspond with the amount of label names."
-        End If
-        m_samples.Add(p_sample)
     End Sub
 End Class
 
@@ -101,15 +99,6 @@ Class CollectorBuilder
     Public Function register(p_registry)
         Err.Raise 5, "CollectorBuilder.register", "This method should not be called."
     End Function
-End Class
-
-' Shared functionality for the different metric samples
-Class Sample
-    Public m_labelValues
-
-    Private Sub Class_Initialize()
-        m_labelValues = Array()
-    End Sub
 End Class
 
 %>

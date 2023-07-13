@@ -1,3 +1,5 @@
+<% Option Explicit %>
+
 <!-- #include virtual = "/prometheus-client/collector-registry.inc" -->
 <!-- #include virtual = "/prometheus-client/counter.inc" -->
 <!-- #include virtual = "/prometheus-client/internal/datetime.inc" -->
@@ -28,14 +30,12 @@ someLabeledCounterBuilder().withName("some_name").withHelp("Test description").w
 Set someLabeledCounter = someLabeledCounterBuilder.register(registry)
 
 Dim testLabeledCounterSample
-Set testLabeledCounterSample = someLabeledCounter.getByLabels(Array("post", "200"))
+someLabeledCounter.getForLabels(Array("post", "200")) ' Testing an already existing child
+Set testLabeledCounterSample = someLabeledCounter.getForLabels(Array("post", "200"))
 
 testLabeledCounterSample.inc
 testLabeledCounterSample.incByValue 3.254
 
-For i = 0 To UBound(testLabeledCounterSample().m_labelValues)
-    Response.Write someLabeledCounter().m_labelNames(i) & ": " & testLabeledCounterSample().m_labelValues(i) & "<br>"
-Next
 Response.Write "Value: " & testLabeledCounterSample.Value & " Created: " & testLabeledCounterSample.Created & "<br><br>"
 
 %>

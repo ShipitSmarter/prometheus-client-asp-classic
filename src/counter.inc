@@ -6,36 +6,31 @@
 ' Counter metric collector
 Class Counter
     Private e_collector
-    Public Default Property Get ExtendedCollector ' Extending Collector
-        Set ExtendedCollector = e_collector
-    End Property
 
     Public Function Init(p_builder)
         Set e_collector = New Collector.Init(p_builder)
         Set Init = me
     End Function
 
-    Public Function getByLabels(p_labelValues)
+    Public Function getForLabels(p_labelValues)
         Dim result
-        Set result = e_collector.getByLabels(p_labelValues)
+        Set result = e_collector.getForLabels(p_labelValues)
         If result Is Nothing Then
-            Set result = New CounterSample
-            result().m_labelValues = p_labelValues
-            e_collector.addSample(result)
+            Set result = newChild(p_labelValues)
         End If
 
-        Set getByLabels = result
+        Set getForLabels = result
     End Function
 
     Public Function getWithoutLabels()
-        Dim result
-        Set result = e_collector.getWithoutLabels()
-        If result Is Nothing Then
-            Set result = New CounterSample
-            e_collector.addSample(result)
-        End if
+        Set getWithoutLabels = getForLabels(Array())
+    End Function
 
-        Set getWithoutLabels = result
+    Private Function newChild(p_labels)
+        Dim child
+        Set child = New CounterChild
+        e_collector.addChild child, p_labels
+        Set newChild = child
     End Function
 End Class
 
@@ -59,13 +54,8 @@ Class CounterBuilder
     End Function
 End Class
 
-' A sample that contains the actual counter metric
-Class CounterSample
-    Private e_sample
-    Public Default Property Get ExtendedSample ' Extending Sample
-        Set ExtendedSample = e_sample
-    End Property
-
+' The value of a single Counter.
+Class CounterChild
     Private m_value
     Public Property Get Value()
         Value = m_value
@@ -78,7 +68,6 @@ Class CounterSample
     End Property
 
     Private Sub Class_Initialize()
-        Set e_sample = New Sample
         m_value = 0
         m_created = convertUtcDateTimeToEpoch(getCurrentDateTimeUtc()) * 1000
     End Sub
