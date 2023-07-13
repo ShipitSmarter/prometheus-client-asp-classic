@@ -8,7 +8,7 @@ Function arraysAreEqaul(arrA, arrB)
         For i = 0 To UBound(arrA)
             If arrA(i) <> arrB(i) Then
                 arraysAreEqaul = False
-                Exit For
+                Exit Function
             End If
         Next
 

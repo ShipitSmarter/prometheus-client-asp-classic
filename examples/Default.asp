@@ -11,31 +11,40 @@ Response.Write "Hello World<br><br>"
 Dim registry
 Set registry = New CollectorRegistry
 
-Dim someCounter, someCounterBuilder
-Set someCounterBuilder = New CounterBuilder
-someCounterBuilder().withName("some_name").withHelp("Test description")
-Set someCounter = someCounterBuilder.register(registry)
-
-Dim testCounterSample
-Set testCounterSample = someCounter.getWithoutLabels
-
-testCounterSample.inc
-testCounterSample.incByValue 5.75
-
-Response.Write "Value: " & testCounterSample.Value & " Created: " & testCounterSample.Created & "<br><br>"
-
 Dim someLabeledCounter, someLabeledCounterBuilder
 Set someLabeledCounterBuilder = New CounterBuilder
 someLabeledCounterBuilder().withName("some_name").withHelp("Test description").withLabelNames(Array("method", "code"))
 Set someLabeledCounter = someLabeledCounterBuilder.register(registry)
 
-Dim testLabeledCounterSample
+Dim testLabeledCounterChild
 someLabeledCounter.getForLabels(Array("post", "200")) ' Testing an already existing child
-Set testLabeledCounterSample = someLabeledCounter.getForLabels(Array("post", "200"))
+Set testLabeledCounterChild = someLabeledCounter.getForLabels(Array("post", "200"))
 
-testLabeledCounterSample.inc
-testLabeledCounterSample.incByValue 3.254
+testLabeledCounterChild.inc
+testLabeledCounterChild.incByValue 3.254
 
-Response.Write "Value: " & testLabeledCounterSample.Value & " Created: " & testLabeledCounterSample.Created & "<br><br>"
+Response.Write "Value: " & testLabeledCounterChild.Value & " Created: " & testLabeledCounterChild.Created & "<br><br>"
+
+someLabeledCounter.getForLabels(Array("get", "200"))
+someLabeledCounter.getForLabels(Array("post", "500"))
+
+Dim testMetricFamilySamples
+Set testMetricFamilySamples = someLabeledCounter.collect()
+Response.Write  "Family name: " & testMetricFamilySamples.Name & "<br>" & _
+                "Type: " & testMetricFamilySamples.MetricType & "<br>" & _
+                "Samples:<br>"
+Dim iterSample
+For Each iterSample in testMetricFamilySamples.Samples
+    Response.Write  "&nbsp;&nbsp;Name: " & iterSample.Name & "<br>" & _
+                    "&nbsp;&nbsp;Value: " & iterSample.Value & "<br>" & _
+                    "&nbsp;&nbsp;Created: " & iterSample.Created & "<br>"
+    Dim i, names, values
+    names = iterSample.LabelNames
+    values = iterSample.LabelValues
+    For i = 0 To UBound(iterSample.LabelNames)
+        Response.Write "&nbsp;&nbsp;" & names(i) & "=" & values(i) & "<br>"
+    Next
+    Response.Write "<br>"
+Next
 
 %>

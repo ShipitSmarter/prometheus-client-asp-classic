@@ -26,6 +26,18 @@ Class Counter
         Set getWithoutLabels = getForLabels(Array())
     End Function
 
+    Public Function collect()
+        Dim i, fullname, samples()
+        ReDim samples(e_collector.m_children.Count - 1)
+        fullname = e_collector.m_name & "_total"
+        For i = 0 To e_collector.m_children.Count - 1
+            Dim labelValues: labelValues = e_collector.m_children(i).Key
+            Dim child: Set child = e_collector.m_children(i).Value
+            Set samples(i) = New Sample.Init(fullname, e_collector.m_labelNames, labelValues, child.Value, child.Created)
+        Next
+        Set collect = New MetricFamilySamples.Init(MetricType_COUNTER, fullname, samples)
+    End Function
+
     Private Function newChild(p_labels)
         Dim child
         Set child = New CounterChild
