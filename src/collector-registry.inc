@@ -7,6 +7,14 @@
 Class CollectorRegistry
     Private m_collectors
 
+    Private m_prefix
+    Public Property Let Prefix(p_prefix)
+        m_prefix = p_prefix
+    End Property
+    Public Property Get Prefix
+        Prefix = m_prefix
+    End Property
+
     Private Sub Class_Initialize()
         Set m_collectors = NewArrayList
     End Sub

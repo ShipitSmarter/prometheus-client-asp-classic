@@ -8,6 +8,7 @@
 
 Dim registry
 Set registry = New CollectorRegistry
+registry.Prefix = "asp_"
 
 Function newCounter(name, help)
     Dim builder

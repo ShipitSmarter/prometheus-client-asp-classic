@@ -9,7 +9,7 @@ Sub writePromExpFmt(p_registry)
     Dim mfs, metrics
     metrics = p_registry.gather()
     For Each mfs In metrics
-        Dim name: name = mfs.Name
+        Dim name: name = p_registry.Prefix & mfs.Name
 
         ' Help line
         Response.Write "# HELP " & name & " "
@@ -22,7 +22,7 @@ Sub writePromExpFmt(p_registry)
         ' Samples lines
         Dim currSample
         For Each currSample In mfs.Samples
-            Response.Write currSample.Name
+            Response.Write p_registry.Prefix & currSample.Name
             If UBound(currSample.LabelNames) >= 0 Then
                 Response.Write "{"
                     Dim i, names, values
