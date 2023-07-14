@@ -12,14 +12,20 @@ Class MetricFamilySamples
         Name = m_name
     End Property
 
+    Private m_help
+    Public Property Get Help
+        Help = m_help
+    End Property
+
     Private m_samples
     Public Property Get Samples
         Samples = m_samples
     End Property
 
-    Public Function Init(p_type, p_name, p_samples)
+    Public Function Init(p_type, p_name, p_help, p_samples)
         m_type = p_type
         m_name = p_name
+        m_help = p_help
         m_samples = p_samples
         Set Init = me
     End Function

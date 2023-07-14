@@ -35,7 +35,7 @@ Class Counter
             Dim child: Set child = e_collector.m_children(i).Value
             Set samples(i) = New Sample.Init(fullname, e_collector.m_labelNames, labelValues, child.Value, child.Created)
         Next
-        Set collect = New MetricFamilySamples.Init(MetricType_COUNTER, fullname, samples)
+        Set collect = New MetricFamilySamples.Init(MetricType_COUNTER, fullname, e_collector.m_help, samples)
     End Function
 
     Private Function newChild(p_labels)
