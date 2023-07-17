@@ -4,42 +4,42 @@
 
 ' A registry of Collectors
 ' Responsible for collecting all the metrics when Prometheus scrapes.
-Class CollectorRegistry
-    Private m_collectors
+Class prom_CollectorRegistry
+    Private m_list_collectors
 
     Private m_prefix
-    Public Property Let Prefix(p_prefix)
-        m_prefix = p_prefix
+    Public Property Let Prefix(value)
+        m_prefix = value
     End Property
     Public Property Get Prefix
-        Prefix = m_prefix
+        prefix = m_prefix
     End Property
 
     Private Sub Class_Initialize()
-        Set m_collectors = NewArrayList
+        Set m_list_collectors = prom_new_arraylist
     End Sub
 
-    Public Sub register(p_collector)
-        m_collectors.Add(p_collector)
+    Public Sub register(collector)
+        m_list_collectors.Add(collector)
     End Sub
 
-    Public Sub unregister(p_collector)
-        m_collectors.Remove(p_collector)
+    Public Sub unregister(collector)
+        m_list_collectors.Remove(collector)
     End Sub
 
     Public Sub clear()
-        m_collectors.Clear()
+        m_list_collectors.Clear()
     End Sub
 
     ' Get MetricFamilySamples from all registered Collectors
     Public Function gather()
-        Dim i, metricFamilies()
-        ReDim metricFamilies(m_collectors.Count - 1)
+        Dim i, metric_families()
+        ReDim metric_families(m_list_collectors.Count - 1)
 
-        For i = 0 To UBound(metricFamilies)
-            Set metricFamilies(i) = m_collectors(i).collect()
+        For i = 0 To UBound(metric_families)
+            Set metric_families(i) = m_list_collectors(i).collect()
         Next
-        gather = metricFamilies
+        gather = metric_families
     End Function
 End Class
 
