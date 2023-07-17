@@ -33,7 +33,7 @@ Class Counter
         For i = 0 To e_collector.m_children.Count - 1
             Dim labelValues: labelValues = e_collector.m_children(i).Key
             Dim child: Set child = e_collector.m_children(i).Value
-            Set samples(i) = New Sample.Init(fullname, e_collector.m_labelNames, labelValues, child.Value, child.Created)
+            Set samples(i) = New Sample.Init(fullname, e_collector.m_labelNames, labelValues, child.Value)
         Next
         Set collect = New MetricFamilySamples.Init(MetricType_COUNTER, fullname, e_collector.m_help, samples)
     End Function
@@ -73,7 +73,7 @@ Class CounterChild
         Value = m_value
     End Property
     
-    ' The datetime when the counter was created, in milliseconds since epoch
+    ' The datetime when the counter was created, in seconds since epoch
     Private m_created
     Public Property Get Created()
         Created = m_created
@@ -81,7 +81,7 @@ Class CounterChild
 
     Private Sub Class_Initialize()
         m_value = 0
-        m_created = convertUtcDateTimeToEpoch(getCurrentDateTimeUtc()) * 1000
+        m_created = convertUtcDateTimeToEpoch(getCurrentDateTimeUtc())
     End Sub
 
     Public Sub inc()

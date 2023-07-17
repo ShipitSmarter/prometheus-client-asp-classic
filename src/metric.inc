@@ -53,17 +53,11 @@ Class Sample
         Value = m_value
     End Property
 
-    Private m_created
-    Public Property Get Created
-        Created = m_created
-    End Property
-
-    Public Function Init(p_name, p_labelNames, p_labelValues, p_value, p_created)
+    Public Function Init(p_name, p_labelNames, p_labelValues, p_value)
         m_name = p_name
         m_labelNames = p_labelNames
         m_labelValues = p_labelValues
         m_value = p_value
-        m_created = p_created
         Set Init = me
     End Function
 End Class

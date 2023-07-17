@@ -35,7 +35,7 @@ Sub writePromExpFmt(p_registry)
                     Next
                 Response.Write "}"
             End If
-            Response.Write " " & currSample.Value & " " & currSample.Created
+            Response.Write " " & currSample.Value
             Response.Write vbLf
         Next
 
