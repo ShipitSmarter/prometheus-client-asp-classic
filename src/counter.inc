@@ -1,6 +1,3 @@
-<!-- #include virtual = "/prometheus-client/internal/collector.inc" -->
-<!-- #include virtual = "/prometheus-client/internal/datetime.inc" -->
-
 <%
 
 ' Counter metric collector

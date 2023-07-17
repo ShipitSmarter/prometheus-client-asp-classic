@@ -1,8 +1,3 @@
-<!-- #include virtual = "/prometheus-client/internal/metric.inc" -->
-<!-- #include virtual = "/prometheus-client/internal/array.inc" -->
-<!-- #include virtual = "/prometheus-client/internal/keyvaluepair.inc" -->
-<!-- #include virtual = "/prometheus-client/internal/list.inc" -->
-
 <%
 
 ' Collector for one metric.

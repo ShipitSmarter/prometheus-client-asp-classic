@@ -1,5 +1,6 @@
 <% Option Explicit %>
 
+<!-- #include virtual = "/prometheus-client/init.inc" -->
 <!-- #include virtual = "/prometheus-client/collector-registry.inc" -->
 <!-- #include virtual = "/prometheus-client/counter.inc" -->
 <!-- #include virtual = "/prometheus-client/bridges/prom-exp-fmt.inc" -->
@@ -17,7 +18,7 @@ Function new_counter(name, help)
     Set new_counter = builder.register(registry)
 End Function
 
-Function new_Labeled_counter(name, help, labels)
+Function new_labeled_counter(name, help, labels)
     Dim builder
     Set builder = New prom_CounterBuilder
     builder().with_name(name).with_help(help).with_label_names(labels)

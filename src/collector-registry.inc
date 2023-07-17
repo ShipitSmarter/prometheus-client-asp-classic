@@ -1,5 +1,3 @@
-<!-- #include virtual = "/prometheus-client/internal/list.inc" -->
-
 <%
 
 ' A registry of Collectors
