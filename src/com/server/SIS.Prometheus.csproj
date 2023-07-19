@@ -23,10 +23,12 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
+      <PackageReference Include="prometheus-net" Version="8.0.1" />
     </ItemGroup>
 
+    <!-- Used in lieu of a Primary Interop Assembly (PIA) -->
     <ItemGroup>
-      <ProjectReference Include="..\contract\Contract.csproj" />
+      <Compile Include="../contract/**/*.cs" />
     </ItemGroup>
 
     <Target Name="ServerUsage" AfterTargets="Build">
