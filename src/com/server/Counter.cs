@@ -1,14 +1,9 @@
 using System;
-using System.Runtime.InteropServices;
 using SIS.PrometheusCOM.Contract;
 
 namespace SIS.PrometheusCOM.Server;
 
-[ComVisible(true)]
-[Guid(ContractIds.Counter.ClassId)]
-[ProgId(ContractIds.Counter.ProgId)]
-[ClassInterface(ClassInterfaceType.None)]
-public class Counter : Contract.ICounter
+internal class Counter : Contract.ICounter
 {
     private Prometheus.Counter _counter;
 
@@ -36,11 +31,7 @@ public class Counter : Contract.ICounter
     }
 }
 
-[ComVisible(true)]
-[Guid(ContractIds.CounterChild.ClassId)]
-[ProgId(ContractIds.CounterChild.ProgId)]
-[ClassInterface(ClassInterfaceType.None)]
-public class CounterChild : Contract.ICounterChild
+internal class CounterChild : Contract.ICounterChild
 {
     private Prometheus.Counter.Child _child;
 

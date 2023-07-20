@@ -3,12 +3,14 @@ using System.Runtime.InteropServices;
 namespace SIS.PrometheusCOM.Contract;
 
 [ComVisible(true)]
-[Guid(ContractIds.MetricFactory.InterfaceId)]
+[Guid(ContractIds.Metrics.InterfaceId)]
 [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-public interface IMetricFactory
+public interface IMetrics
 {
+    ICollectorRegistry Registry { get; }
+
     /// <summary>
-    /// Create a new unlabeld Counter.
+    /// Create a new unlabeled Counter.
     /// </summary>
     ICounter CreateCounter(string name, string help);
 

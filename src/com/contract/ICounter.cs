@@ -46,6 +46,5 @@ public interface ICounter
     /// <summary>
     /// Get a Counter with the specified label values.
     /// </summary>
-    [return: MarshalAs(UnmanagedType.Struct)]
     ICounterChild WithLabels(object[] labelValues);
 }
