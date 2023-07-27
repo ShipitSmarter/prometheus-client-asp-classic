@@ -8,21 +8,33 @@ namespace SIS.PrometheusCOM.Server;
 [Guid(ContractIds.Metrics.ClassId)]
 [ProgId(ContractIds.Metrics.ProgId)]
 [ClassInterface(ClassInterfaceType.None)]
-public class Metrics : Contract.IMetrics
+public class MetricsCOM : Contract.IMetrics
 {
-    private readonly ICollectorRegistry _registry = new CollectorRegistry();
+    ICollectorRegistry IMetrics.Registry => Metrics.Registry;
+    ICounter IMetrics.CreateCounter(string name, string help) => Metrics.CreateCounter(name, help);
+    ICounter IMetrics.CreateLabeledCounter(string name, string help, object[] labelNames) => Metrics.CreateLabeledCounter(name, help, labelNames);
+}
 
-    ICollectorRegistry IMetrics.Registry => _registry;
-
-    ICounter IMetrics.CreateCounter(string name, string help)
+internal static class Metrics
+{
+    static Metrics()
     {
-        var counter = PromMetrics.CreateCounter(name, help);
+        Prometheus.Metrics.SuppressDefaultMetrics();
+        Registry = new CollectorRegistry();
+    }
+
+    internal static Prometheus.CollectorRegistry PromRegistry => Prometheus.Metrics.DefaultRegistry;
+    public static ICollectorRegistry Registry { get; }
+
+    public static ICounter CreateCounter(string name, string help)
+    {
+        var counter = Prometheus.Metrics.CreateCounter(name, help);
         return new Counter(counter);
     }
 
-    ICounter IMetrics.CreateLabeledCounter(string name, string help, object[] labelNames)
+    public static ICounter CreateLabeledCounter(string name, string help, object[] labelNames)
     {
-        var counter = PromMetrics.CreateCounter(name, help, Array.ConvertAll(labelNames, x => x as string));
+        var counter = Prometheus.Metrics.CreateCounter(name, help, Array.ConvertAll(labelNames, x => x as string));
         return new Counter(counter);
     }
 }
