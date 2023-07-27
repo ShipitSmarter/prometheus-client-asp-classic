@@ -1,0 +1,22 @@
+<object runat="server" scope="application" id="Metrics" progid="SIS.PrometheusCOM.Metrics">
+</object>
+
+<script language="vbscript" runat="server">
+
+Sub Application_OnStart
+    Set Application("asp_sessions_total") = Metrics.CreateCounter("asp_sessions_total", "Total amount of started sessions")
+End Sub
+
+Sub Application_OnEnd
+'some code
+End Sub
+
+Sub Session_OnStart
+    Application("asp_sessions_total").Inc()
+End Sub
+
+Sub Session_OnEnd
+'some code
+End Sub
+
+</script>
