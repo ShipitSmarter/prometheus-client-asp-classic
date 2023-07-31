@@ -1,60 +1,15 @@
-<% ' Follows the Usage instruction from README.md %>
-
-<!-- #include virtual = "/prometheus-client/init.inc" -->
-
 <%
-    ' =====================
-    '   Collector Registry
-    ' =====================
-%>
+    Response.CodePage = 65001
+    Response.Charset = "utf-8"
+    Response.ContentType = "text/plain; version=0.0.4"
 
-<!-- #include virtual = "/prometheus-client/collector-registry.inc" -->
+    Dim metrics: Set metrics = Server.CreateObject("SIS.PrometheusCOM.Metrics")
+    Dim counter: Set counter = metrics.CreateCounter("name", "help")
+    counter.Inc()
 
-<%
-Dim registry
-Set registry = New prom_CollectorRegistry
-registry.Prefix = "asp_" ' Optional
-%>
+    Dim labeledCounter: Set labeledCounter = metrics.CreateLabeledCounter("name2", "help2", Array("label"))
+    Dim labeledCounterSample: Set labeledCounterSample = labeledCounter.WithLabels(Array("value"))
+    labeledCounterSample.Inc()
 
-<%
-    ' =====================
-    '   Counter collector
-    ' =====================
-%>
-
-<!-- #include virtual = "/prometheus-client/counter.inc" -->
-
-<%
-Dim builder, counter
-Set builder = New prom_CounterBuilder
-builder().with_name("metric_name").with_help("A description about this metric")
-Set counter = builder.register(registry)
-%>
-
-<%
-    ' =====================
-    '    Counter sample
-    ' =====================
-%>
-
-<%
-Dim sample
-Set sample = counter.get_without_labels()
-%>
-
-<%
-sample.inc
-sample.add 3.254
-%>
-
-<%
-    ' =====================
-    '         Output
-    ' =====================
-%>
-
-<!-- #include virtual = "/prometheus-client/bridges/prom-exp-fmt.inc" -->
-
-<%
-prom_write_prom_exp_fmt registry
+    Response.Write metrics.Registry.CollectAndExportAsText()
 %>
