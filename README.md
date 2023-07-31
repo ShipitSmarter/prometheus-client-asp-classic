@@ -1,61 +1,53 @@
 # prometheus-client-asp-classic
 
-An ASP Classic library to setup and collect metrics from your application and make them availble in the Prometheus Exposition Format.
+An COM library wrapping around [prometheus-net](https://github.com/prometheus-net/prometheus-net) to collect and expose Prometheus in ASP Classic.
 
 ## Usage
 
-> Wherever you use the library, you will need to include [`init.inc`](src/init.inc) to include all required internal files.
+To use this library you will need to create the one object that is used to interact with everything in the library: `SIS.PrometheusCOM.Metrics`.  
+It is posssible to just create this object inside your ASP code for a minimal setup, but it is recommended to register the object in your `Global.asa` to only create the object once and have easy access to it in all your pages.
 
-First create a new `CollectorRegistry` that will keep track of all the collectors:
+### Global.asa (Recommended)
 
-```vbscript
-<!-- #include virtual = "/prometheus-client/init.inc" -->
-<!-- #include virtual = "/prometheus-client/collector-registry.inc" -->
+First register the object to the `application` scope and choose an id for it, in this case `Metrics`:
 
-<%
-Dim registry
-Set registry = New prom_CollectorRegistry
-registry.Prefix = "asp_" ' Optional
-%>
+```html
+<object runat="server" scope="application" id="Metrics" progid="SIS.PrometheusCOM.Metrics">
+</object>
 ```
 
-Now create a new `Collector` for a metric, e.g. `Counter`, and register it to `registry` using one of the builders:
+Now you can access this object from anywhere in your ASP code like so:
 
 ```vbscript
-<!-- #include virtual = "/prometheus-client/counter.inc" -->
-
-<%
-Dim builder, counter
-Set builder = New prom_CounterBuilder
-builder().with_name("metric_name").with_help("A description about this metric")
-Set counter = builder.register(registry)
-%>
+Sub do_something
+    Dim counter: Set counter = Metrics.CreateCounter("asp_some_counter_total", "Total of some_counter")
+    counter.Inc()
+End Sub
 ```
 
-With the counter ready you can request a sample using `get_for_labels()` or `get_without_labels()`, depending on if labels were set using `with_label_names` on the builder:
+To create a metrics endpoint that Prometheus can scrape, create a new file (e.g. `metrics.asp`) and add the following ASP code to set the response correctly:
 
 ```vbscript
 <%
-Dim sample
-Set sample = counter.get_without_labels()
+    Response.CodePage = 65001
+    Response.Charset = "utf-8"
+    Response.ContentType = "text/plain; version=0.0.4"
+    Response.Write Metrics.Registry.CollectAndExportAsText()
 %>
 ```
 
-The counter can be incremented or added to with the `inc` or `add` methods:
+Check [examples/global](examples/global) for a full example using the `Global.asa` file.
+
+### Minimal
+
+For the minimal approach you just have to create the metrics object yourself like so:
 
 ```vbscript
 <%
-sample.inc
-sample.add 3.254
+    Dim metrics: Set metrics = Server.CreateObject("SIS.PrometheusCOM.Metrics")
 %>
 ```
 
-To output all the registerd collectors in the Prometheus Exposition Format, call `prom_write_prom_exp_fmt`:
+You can than use `metrics` to interact with the library, e.g. calling `metrics.CreateCounter(...)`.
 
-```vbscript
-<!-- #include virtual = "/prometheus-client/bridges/prom-exp-fmt.inc" -->
-
-<%
-prom_write_prom_exp_fmt registry
-%>
-```
+Check [examples/minimal](examples/minimal) for a more elaborate example.
