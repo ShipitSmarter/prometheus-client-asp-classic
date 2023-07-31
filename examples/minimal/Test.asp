@@ -6,4 +6,7 @@ Dim labeledCounter: Set labeledCounter = factory.CreateLabeledCounter("name2", "
 Dim labeledCounterSample: Set labeledCounterSample = labeledCounter.WithLabels(Array("test"))
 labeledCounterSample.Inc()
 
+Dim gauge: Set gauge = factory.CreateGauge("gauge1", "gauge help")
+gauge.Set(2.67)
+
 %>

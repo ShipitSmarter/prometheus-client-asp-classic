@@ -5,6 +5,7 @@
 
 Sub Application_OnStart
     Set Application("asp_sessions_total") = Metrics.CreateCounter("asp_sessions_total", "Total amount of started sessions")
+    Set Application("asp_open_sessions") = Metrics.CreateGauge("asp_open_sessions", "Total open sessions")
 End Sub
 
 Sub Application_OnEnd
@@ -13,10 +14,11 @@ End Sub
 
 Sub Session_OnStart
     Application("asp_sessions_total").Inc()
+    Application("asp_open_sessions").Inc()
 End Sub
 
 Sub Session_OnEnd
-'some code
+    Application("asp_open_sessions").Dec()
 End Sub
 
 </script>

@@ -19,4 +19,12 @@ public sealed class ContractIds
     public sealed class CounterChild {
         public const string InterfaceId = "09089077-5b04-4c83-bcd7-044af8819835";
     }
+
+    public sealed class Gauge {
+        public const string InterfaceId = "622b16fc-54b6-4212-94c3-42043709dad5";
+    }
+
+    public sealed class GaugeChild {
+        public const string InterfaceId = "b8bfe0a5-3651-4deb-8238-8b6f3c69e51a";
+    }
 }

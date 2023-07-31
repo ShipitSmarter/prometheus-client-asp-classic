@@ -18,4 +18,14 @@ public interface IMetrics
     /// Create a new labeled Counter.
     /// </summary>
     ICounter CreateLabeledCounter(string name, string help, object[] labelNames);
+
+    /// <summary>
+    /// Create a new unlabeled Gauge.
+    /// </summary>
+    IGauge CreateGauge(string name, string help);
+
+    /// <summary>
+    /// Create a new labeled Counter.
+    /// </summary>
+    IGauge CreateLabeledGauge(string name, string help, object[] labelNames);
 }

@@ -13,6 +13,8 @@ public class MetricsCOM : Contract.IMetrics
     ICollectorRegistry IMetrics.Registry => Metrics.Registry;
     ICounter IMetrics.CreateCounter(string name, string help) => Metrics.CreateCounter(name, help);
     ICounter IMetrics.CreateLabeledCounter(string name, string help, object[] labelNames) => Metrics.CreateLabeledCounter(name, help, labelNames);
+    IGauge IMetrics.CreateGauge(string name, string help) => Metrics.CreateGauge(name, help);
+    IGauge IMetrics.CreateLabeledGauge(string name, string help, object[] labelNames) => Metrics.CreateLabeledGauge(name, help, labelNames);
 }
 
 internal static class Metrics
@@ -36,5 +38,17 @@ internal static class Metrics
     {
         var counter = Prometheus.Metrics.CreateCounter(name, help, Array.ConvertAll(labelNames, x => x as string));
         return new Counter(counter);
+    }
+
+    public static IGauge CreateGauge(string name, string help)
+    {
+        var gauge = Prometheus.Metrics.CreateGauge(name, help);
+        return new Gauge(gauge);
+    }
+
+    public static IGauge CreateLabeledGauge(string name, string help, object[] labelNames)
+    {
+        var gauge = Prometheus.Metrics.CreateGauge(name, help, Array.ConvertAll(labelNames, x => x as string));
+        return new Gauge(gauge);
     }
 }
