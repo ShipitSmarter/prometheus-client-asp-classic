@@ -51,3 +51,29 @@ For the minimal approach you just have to create the metrics object yourself lik
 You can than use `metrics` to interact with the library, e.g. calling `metrics.CreateCounter(...)`.
 
 Check [examples/minimal](examples/minimal) for a more elaborate example.
+
+## Installation
+
+1. Download the zip-file for your architecture from one of the [releases](https://github.com/ShipitSmarter/prometheus-client-asp-classic/releases).
+2. Unzip the file to a folder on your server.
+3. Register the DLL:
+```powershell
+regsvr32.exe "[PATH_TO_FOLDER]\SIS.Prometheus.comhost.dll"
+```
+
+To unregister the DLL you can run the following command:
+```powershell
+regsvr32.exe /u "[PATH_TO_FOLDER]\SIS.Prometheus.comhost.dll"
+```
+
+## Developer information
+
+### Create a new release
+
+There is a release workflow that triggers when you push a new version tag (`v[0-9]+.[0-9]+.[0-9]+`) that will automatically create a new release for you.  
+The release will contain the build artifacts and a changelog generated based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). The changelog will also be automatically updated on the `main` branch.
+
+### Updating to newer .NET version
+
+1. Update the `TargetFramework` in [src/SIS.Prometheus.csproj](src/SIS.Prometheus.csproj).
+2. Update the used `dotnet-version` in [.github/template/build/action.yaml](.github/template/build/action.yaml)

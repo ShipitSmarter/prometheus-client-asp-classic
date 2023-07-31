@@ -19,23 +19,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="dSPACE.Runtime.InteropServices.BuildTasks" Version="1.1.1">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
       <PackageReference Include="prometheus-net" Version="8.0.1" />
     </ItemGroup>
 
     <!-- Used in lieu of a Primary Interop Assembly (PIA) -->
     <ItemGroup>
-      <Compile Include="../contract/**/*.cs" />
+      <Compile Include="../Contract/**/*.cs" />
     </ItemGroup>
 
     <Target Name="ServerUsage" AfterTargets="Build">
       <Message Importance="High" Text="%0a************************************%0a*** $(MSBuildProjectName) usage instructions ***%0a************************************" />
       <Message Importance="High" Text="The server must be COM registered in order to activate.%0aThe following commands must be executed from an elevated command prompt." />
-      <Message Importance="High" Text="Register:%0a    regsvr32.exe &quot;$(ProjectDir)$(OutputPath)$(ComHostFileName)&quot;" />
-      <Message Importance="High" Text="Unregister:%0a    regsvr32.exe /u &quot;$(ProjectDir)$(OutputPath)$(ComHostFileName)&quot;" />
+      <Message Importance="High" Text="Register:%0a    regsvr32.exe &quot;$(OutputPath)$(ComHostFileName)&quot;" />
+      <Message Importance="High" Text="Unregister:%0a    regsvr32.exe /u &quot;$(OutputPath)$(ComHostFileName)&quot;" />
     </Target>
 
 </Project>
