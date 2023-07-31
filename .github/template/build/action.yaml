@@ -1,0 +1,31 @@
+name: Build COM Library
+
+inputs:
+  runtime:
+    description: Specifies the target runtime
+    required: true
+    default: win-x64
+
+description: Build and test Editor
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup .NET Core SDK 7.x
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.x'
+    - name: Install dependencies
+      shell: bash
+      run: dotnet restore --runtime ${{ inputs.runtime }}
+      working-directory: ./src
+    - name: Build ${{ inputs.runtime }}
+      shell: bash
+      run: dotnet build --no-restore --configuration Release --runtime ${{ inputs.runtime }} --no-self-contained --output ../output-${{ inputs.runtime }}/
+      working-directory: ./src
+    - name: Upload artifact ${{ inputs.runtime }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.runtime }}
+        path: output-${{ inputs.runtime }}
